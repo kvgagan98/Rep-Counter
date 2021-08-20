@@ -274,7 +274,7 @@ void main (void)
 	while (START_BUTTON == 1){
 		if (CHOOSE_BUTTON == 0){
 			LCDprint(">  JUMP ROPE  <",1,1);
-			LCDprint("   WALK/RUN",2,1);z
+			LCDprint("   WALK/RUN",2,1);
 		}
 		waitms(100);
 		if (CHOOSE_BUTTON == 0){
