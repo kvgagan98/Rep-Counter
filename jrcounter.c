@@ -248,11 +248,14 @@ void main (void)
 	float ax,ay,az;
     float init_y, change_y;
     float sum; 
+	float pace;
 
     int i = 0;
     int resting_flag = 0;
 	int jumps = 0;
 	int select_flag = 1;
+	int milli_seconds_counter = 0;
+	long int seconds_counter = 0;
 
     LCD_4BIT();
     waitms(500); // Give PuTTy a chance to start before sending
@@ -270,18 +273,12 @@ void main (void)
 
 	sum = 0.0;
 	LCDprint("   JUMP ROPE   ",1,1);
-	LCDprint("   WALK/RUN",2,1);
+	LCDprint("  REP COUNTER",2,1);
+	waitms(2000);
+	LCDprint("   PRESS  3.0",1,1);
+	LCDprint("    TO START",2,1);
 	while (START_BUTTON == 1){
-		if (CHOOSE_BUTTON == 0){
-			LCDprint(">  JUMP ROPE  <",1,1);
-			LCDprint("   WALK/RUN",2,1);
-		}
-		waitms(100);
-		if (CHOOSE_BUTTON == 0){
-			LCDprint("   JUMP ROPE",1,1);
-			LCDprint(">  WALK/RUN   <",2,1);
-		}
-		waitms(100);
+		continue;
 	}
 	waitms(2000);
 	while(1)
@@ -306,6 +303,7 @@ void main (void)
             }
             init_y=sum/50.0;
             resting_flag = 1; //Got the resting value
+			milli_seconds_counter+=50;
         }
 
         change_y = fabsf(ay) - init_y;
@@ -314,14 +312,28 @@ void main (void)
             jumps++;
         }
 
+		if (seconds_counter < 1){
+			pace = 0.0;
+		}
+
+		if (seconds_counter >= 1){
+			pace = (float)jumps/seconds_counter*60.0;
+		}
+
 		printf ("%.3f %7.5f\n", fabsf(ay), ay);
-        sprintf(buff,"SUM=%.3f",init_y);
+        sprintf(buff,"JUMPS=%i",jumps);
         LCDprint(buff,1,1);
-        sprintf(buff2,"JUMPS=%i",jumps);
+        sprintf(buff2,"%.1f skips/min",pace);
         LCDprint(buff2,2,1);
 		while (PAUSE_BUTTON == 0) {
 			continue;
 		} 
-		waitms(35);
+		waitms(50);
+		milli_seconds_counter+=50;
+
+		if (milli_seconds_counter == 1000){
+			seconds_counter++;
+			milli_seconds_counter = 0;
+		}
 	 }  
 }	
